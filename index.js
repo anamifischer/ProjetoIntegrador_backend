@@ -6,9 +6,9 @@ server.use(express.json());
 const PORT = 3000;
 
 let produtos = [
-  { id: 1, nome: 'Teclado', preco: 120 },
-  { id: 2, nome: 'Mouse', preco: 60 },
-  { id: 3, nome: 'Monitor', preco: 600 }
+  { id: 1, produto: 'Teclado', preco: 120 },
+  { id: 2, produto: 'Mouse', preco: 60 },
+  { id: 3, produto: 'Monitor', preco: 600 }
 ];
 
 // Buscar todos os produtos
@@ -30,18 +30,31 @@ server.get('/produtos/:id', (req, res) => {
   return res.status(200).json(produto);
 });
 
+
+
 // Cadastrar produto
 server.post('/produtos', (req, res) => {
-  const { nome, preco } = req.body;
+  console.log(req.body);
+  // const { produto, preco } = req.body;
+  const produto = req.body.produto;
+  const preco = req.body.preco;
+
+  console.log(produto);
+
+
+  if (!produto || !preco) {
+    return res.status(400).json({
+      message: 'Produto e preço são obrigatórios!'
+    });
+  }
 
   const novoProduto = {
     id: produtos.length + 1,
-    nome,
-    preco
+    produto,
+    preco: preco
   };
 
   produtos.push(novoProduto);
-
   return res.status(201).json(novoProduto);
 });
 
