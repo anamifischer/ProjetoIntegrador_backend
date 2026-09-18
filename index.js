@@ -58,6 +58,61 @@ server.post('/produtos', (req, res) => {
   return res.status(201).json(novoProduto);
 });
 
+//Deletar um produto
+server.delete('/produtos/:id', (req, res) => {
+  const id = Number(req.params.id);
+
+  const produtoIndex = produtos.findIndex((p) => p.id === id);
+
+  console.log(produtoIndex);
+
+  if (produtoIndex === -1) {
+    return res.status(404).json({
+      message: 'Produto não encontrado!'
+    });
+  }
+
+  produtos.splice(produtoIndex, 1);
+
+  return res.status(200).json({
+    message: 'Produto excluído com sucesso!'
+  });
+});
+
+
+//Atualizar produto
+server.put('/produtos/:id', (req, res) => {
+  const id = req.params.id;
+  const { produto, preco } = req.body;
+
+  const produtoIndex = produtos.findIndex((p) => p.id == id);
+
+  if (produtoIndex == -1) {
+    return res.status(404).json({
+      message: 'Produto não encontrado!'
+    });
+  }
+
+  if (!produto || !preco) {
+    return res.status(400).json({
+      message: 'Produto e preço são obrigatórios!'
+    });
+  }
+
+  produtos[produtoIndex] = {
+    id: parseInt(id),
+    produto,
+    preco
+  };
+
+  return res.status(200).json({
+    message: 'Produto atualizado com sucesso!',
+    produto: produtos[produtoIndex]
+  });
+});
+
+
+
 server.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
